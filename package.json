@@ -1,60 +1,48 @@
 {
   "name": "@kilnfi/sdk",
-  "version": "2.9.0",
+  "version": "4.1.10",
   "autor": "Kiln <support@kiln.fi> (https://kiln.fi)",
   "license": "BUSL-1.1",
   "description": "JavaScript sdk for Kiln API",
-  "main": "lib/kiln.js",
-  "types": "lib/kiln.d.ts",
-  "scripts": {
-    "lint": "eslint index.ts src/**/*.ts",
-    "lint:fix": "eslint index.ts src/**/*.ts --fix",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+  "type": "module",
+  "main": "./build/cjs/kiln.js",
+  "module": "./build/esm/kiln.js",
+  "types": "./build/types/kiln.d.ts",
+  "typings": "./build/types/kiln.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./build/types/kiln.d.ts",
+      "import": "./build/esm/kiln.js",
+      "default": "./build/cjs/kiln.js"
+    }
   },
-  "keywords": [
-    "sdk",
-    "js",
-    "eth",
-    "sol",
-    "xtz",
-    "validators",
-    "staking"
-  ],
+  "files": ["package.json", "build", "src"],
+  "scripts": {
+    "lint": "biome check ./src",
+    "format": "biome check ./src --write --unsafe",
+    "build": "bun run build:esm && bun run build:cjs && bun run build:types",
+    "prepublishOnly": "bun scripts/prepublishOnly.ts",
+    "build:esm": "tsc --project ./tsconfig.build.json --module es2020 --outDir ./build/esm && printf '{\"type\": \"module\",\"sideEffects\":false}' > ./build/esm/package.json",
+    "build:cjs": "tsc --project ./tsconfig.build.json --module commonjs --outDir ./build/cjs  --removeComments --verbatimModuleSyntax false && printf '{\"type\":\"commonjs\"}' > ./build/cjs/package.json",
+    "build:types": "tsc --project ./tsconfig.build.json --module esnext --declarationDir ./build/types --emitDeclarationOnly --declaration --declarationMap"
+  },
+  "keywords": ["sdk", "js", "eth", "sol", "xtz", "validators", "staking"],
   "author": "Kiln",
   "bugs": {
     "url": "https://github.com/kilnfi/sdk-js/issues"
   },
   "homepage": "https://github.com/kilnfi/sdk-js#readme",
   "dependencies": {
-    "@blockfrost/blockfrost-js": "^5.0.0",
-    "@cosmjs/proto-signing": "^0.30.1",
-    "@cosmjs/stargate": "^0.30.0",
-    "@emurgo/cardano-serialization-lib-nodejs": "^11.5.0",
-    "@solana/web3.js": "^1.47.3",
-    "@substrate/txwrapper-polkadot": "^7.0.1",
-    "@taquito/local-forging": "^17.4.0",
-    "@taquito/rpc": "^16.0.1",
-    "@types/bn.js": "^5.1.5",
-    "axios": "^0.23.0",
-    "bn.js": "^5.2.1",
-    "ethers": "^5.6.4",
-    "fireblocks-sdk": "^4.0.0",
-    "js-sha256": "^0.9.0",
-    "near-api-js": "^2.1.4",
-    "protobufjs": "^7.2.5",
-    "viem": "^1.19.9",
-    "web3-core": "^1.10.0"
+    "@fireblocks/ts-sdk": "^6.0.0",
+    "@types/bun": "^1.1.11",
+    "bech32": "^2.0.0",
+    "openapi-fetch": "^0.12.0",
+    "viem": "^2.21.29"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
-    "@types/node-fetch": "^2.6.2",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-next": "^12.2.3",
-    "eslint-plugin-import": "^2.25.2",
-    "typescript": "^5.3.2"
+    "@biomejs/biome": "^1.9.1",
+    "@types/node-fetch": "^2.6.11",
+    "typescript": "^5.6.2"
   }
 }

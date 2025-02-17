@@ -6,22 +6,24 @@ on:
       - main
     paths:
       - "src/**"
-      - "index.ts"
       - ".github/workflows/sdk.yml"
   pull_request:
     branches:
       - main
     paths:
       - "src/**"
-      - "index.ts"
       - ".github/workflows/sdk.yml"
 
 jobs:
-  lint:
+  lint-and-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Install modules
-        run: npm install
-      - name: Run ESLint
-        run: npm run lint
+      - uses: actions/checkout@v4
+      - name: "setup:bun"
+        uses: oven-sh/setup-bun@v1
+      - name: "install-deps"
+        run: bun install
+      - name: "lint"
+        run: bun run lint
+      - name: "build"
+        run: bun run build
